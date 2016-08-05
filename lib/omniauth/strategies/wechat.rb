@@ -23,11 +23,13 @@ module OmniAuth
       info do
         {
           nickname:   raw_info['nickname'],
+          name:       raw_info['nickname'],
           sex:        raw_info['sex'],
           province:   raw_info['province'],
           city:       raw_info['city'],
           country:    raw_info['country'],
-          headimgurl: raw_info['headimgurl']
+          headimgurl: raw_info['headimgurl'],
+          image:      raw_info['headimgurl']
         }
       end
 
@@ -50,20 +52,20 @@ module OmniAuth
             @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
           else
             @raw_info = {"openid" => @uid }
-            @raw_info.merge!("unionid" => access_token["unionid"]) if access_token["unionid"]
-            @raw_info
           end
+          @raw_info.merge!("unionid" => access_token["unionid"]) if access_token["unionid"]
+          @raw_info
         end
       end
 
       protected
       def build_access_token
         params = {
-          'appid' => client.id, 
+          'appid' => client.id,
           'secret' => client.secret,
           'code' => request.params['code'],
-          'grant_type' => 'authorization_code' 
-          }.merge(token_params.to_hash(symbolize_keys: true))
+          'grant_type' => 'authorization_code'
+        }.merge(token_params.to_hash(symbolize_keys: true))
         client.get_token(params, deep_symbolize(options.auth_token_params))
       end
 
