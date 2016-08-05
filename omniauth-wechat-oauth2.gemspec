@@ -1,3 +1,5 @@
+require File.expand_path('../lib/omniauth/version', __FILE__)
+
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'omniauth-wechat-oauth2'
