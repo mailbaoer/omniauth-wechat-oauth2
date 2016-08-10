@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::Wechat do
+describe OmniAuth::Strategies::WechatMp do
   let(:request) { double('Request', :params => {}, :cookies => {}, :env => {}, :scheme=>"http", :url=>"localhost") }
   let(:app) { ->{[200, {}, ["Hello."]]}}
   let(:client){OAuth2::Client.new('appid', 'secret')}
@@ -76,14 +76,14 @@ describe OmniAuth::Strategies::Wechat do
   end
 
   describe "#build_access_token" do
-    specify "request includes 'appid', 'secret', 'code', 'grant_type' and will parse response as json"do 
+    specify "request includes 'appid', 'secret', 'code', 'grant_type' and will parse response as json"do
       subject.stub(:client => client, :request=>double("request", params:{"code"=>"server_code"}))
       client.should_receive(:get_token).with({
-        "appid" => "appid",
-        "secret" => "secret",
-        "code" => "server_code",
-        "grant_type" => "authorization_code",
-        :parse => :json
+                                               "appid" => "appid",
+                                               "secret" => "secret",
+                                               "code" => "server_code",
+                                               "grant_type" => "authorization_code",
+                                               :parse => :json
       },{})
       subject.send(:build_access_token)
     end
@@ -95,9 +95,9 @@ describe OmniAuth::Strategies::Wechat do
 
     context "when scope is snsapi_base" do
       let(:access_token) { OAuth2::AccessToken.from_hash(client, {
-        "openid"=>"openid", 
-        "scope"=>"snsapi_base", 
-        "access_token"=>"access_token"
+                                                           "openid"=>"openid",
+                                                           "scope"=>"snsapi_base",
+                                                           "access_token"=>"access_token"
       })}
 
       specify "only have openid" do
@@ -108,9 +108,9 @@ describe OmniAuth::Strategies::Wechat do
 
     context "when scope is snsapi_userinfo" do
       let(:access_token) { OAuth2::AccessToken.from_hash(client, {
-        "openid"=>"openid", 
-        "scope"=>"snsapi_userinfo", 
-        "access_token"=>"access_token"
+                                                           "openid"=>"openid",
+                                                           "scope"=>"snsapi_userinfo",
+                                                           "access_token"=>"access_token"
       })}
 
       specify "will query for user info" do
@@ -123,7 +123,7 @@ describe OmniAuth::Strategies::Wechat do
           "province" => "PROVINCE",
           "city" => "CITY",
           "country" => "COUNTRY",
-          "headimgurl" => "header_image_url", 
+          "headimgurl" => "header_image_url",
           "privilege" => ["PRIVILEGE1", "PRIVILEGE2"]
         }
 
