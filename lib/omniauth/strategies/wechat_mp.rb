@@ -29,7 +29,8 @@ module OmniAuth
           city:       raw_info['city'],
           country:    raw_info['country'],
           headimgurl: raw_info['headimgurl'],
-          image:      raw_info['headimgurl']
+          image:      raw_info['headimgurl'],
+          unionid:    raw_info['unionid']
         }
       end
 
@@ -47,14 +48,8 @@ module OmniAuth
         @uid ||= access_token["openid"]
         @raw_info ||= begin
           access_token.options[:mode] = :query
-          if access_token["scope"] == "snsapi_userinfo"
-            response = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :text)
-            @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
-          else
-            @raw_info = {"openid" => @uid }
-          end
-          @raw_info.merge!("unionid" => access_token["unionid"]) if access_token["unionid"]
-          @raw_info
+          response = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :text)
+          @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
         end
       end
 
